@@ -19,6 +19,7 @@ import {
   TreePine,
   LifeBuoy,
   Settings,
+  Landmark,
 } from "lucide-react";
 
 const navItems = [
@@ -27,6 +28,7 @@ const navItems = [
   { href: "/livestock", label: "Livestock", icon: Beef },
   { href: "/aquaculture", label: "Aquaculture", icon: Fish },
   { href: "/forestry", label: "Forestry", icon: TreePine },
+  { href: "/credit-scoring", label: "Credit Scoring", icon: Landmark },
 ];
 
 const helpAndSettingsItems = [

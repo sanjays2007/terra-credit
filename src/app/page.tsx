@@ -7,6 +7,7 @@ import {
   Droplets,
   Feather,
   Fish,
+  Landmark,
   Map,
   MoreVertical,
   Sprout,
@@ -50,7 +51,7 @@ const domainModules = [
     description: "Fisheries",
     icon: Fish,
     href: "/aquaculture",
-    stats: "4 Ponds Monitored",
+stats: "4 Ponds Monitored",
     color: "bg-blue-100 dark:bg-blue-900/50",
     textColor: "text-blue-700 dark:text-blue-300",
   },
@@ -63,13 +64,22 @@ const domainModules = [
     color: "bg-emerald-100 dark:bg-emerald-900/50",
     textColor: "text-emerald-700 dark:text-emerald-300",
   },
+  {
+    title: "Credit Scoring",
+    description: "Loan & Risk Analysis",
+    icon: Landmark,
+    href: "/credit-scoring",
+    stats: "AI-Powered",
+    color: "bg-indigo-100 dark:bg-indigo-900/50",
+    textColor: "text-indigo-700 dark:text-indigo-300",
+  },
 ];
 
 export default function DashboardPage() {
   const farmMapImage = PlaceHolderImages.find((img) => img.id === "farm-map");
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 md:p-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-4 md:p-6">
       {/* Weather Widget */}
       <Card className="col-span-1 lg:col-span-2 xl:col-span-2">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -104,7 +114,7 @@ export default function DashboardPage() {
       </Card>
 
       {/* Farm Map Widget */}
-      <Card className="col-span-1 lg:col-span-2 xl:col-span-2 row-span-2 overflow-hidden">
+      <Card className="col-span-1 lg:col-span-2 xl:col-span-3 row-span-2 overflow-hidden">
         <CardHeader>
           <CardTitle className="font-headline text-lg">
             Interactive Farm Map

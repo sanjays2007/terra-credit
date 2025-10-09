@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -22,12 +21,15 @@ const pageTitles: { [key: string]: string } = {
   "/aquaculture": "Aquaculture & Fisheries",
   "/forestry": "Forestry & Agroforestry",
   "/aquaculture/analysis": "AI Water Quality Analysis",
+  "/credit-scoring": "AI Credit Scoring",
 };
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const pageTitle = pageTitles[pathname] || "AgriSuiteAI";
-  const isSubPage = pathname !== "/";
+  const isSubPage = !["/", "/agriculture", "/livestock", "/aquaculture", "/forestry", "/credit-scoring"].includes(pathname);
+  const isFeaturePage = ["/agriculture", "/livestock", "/aquaculture", "/forestry", "/credit-scoring"].includes(pathname);
+
 
   return (
     <SidebarProvider>
@@ -37,7 +39,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <SidebarRail />
       <SidebarInset>
         <div className="relative">
-          {isSubPage && (
+          {(isSubPage || isFeaturePage) && (
              <Button
              variant="outline"
              size="sm"
@@ -50,7 +52,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
              </Link>
            </Button>
           )}
-          <AppHeader title={pageTitle} showBackButton={isSubPage} />
+          <AppHeader title={pageTitle} showBackButton={isSubPage || isFeaturePage} />
         </div>
         <main className="flex-1">{children}</main>
       </SidebarInset>
