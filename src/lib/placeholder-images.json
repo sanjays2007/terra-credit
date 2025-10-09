@@ -1,0 +1,34 @@
+{
+  "placeholderImages": [
+    {
+      "id": "farm-map",
+      "description": "An aerial view of a farm showing fields and boundaries.",
+      "imageUrl": "https://picsum.photos/seed/farmmap/800/600",
+      "imageHint": "farm aerial"
+    },
+    {
+      "id": "crop-field",
+      "description": "A vibrant green crop field under a clear blue sky.",
+      "imageUrl": "https://picsum.photos/seed/cropfield/400/300",
+      "imageHint": "crop field"
+    },
+    {
+      "id": "livestock-pasture",
+      "description": "Cows grazing in a lush green pasture.",
+      "imageUrl": "https://picsum.photos/seed/livestock/400/300",
+      "imageHint": "cows pasture"
+    },
+    {
+      "id": "aquaculture-pond",
+      "description": "A calm aquaculture pond reflecting the sky.",
+      "imageUrl": "https://picsum.photos/seed/pond/400/300",
+      "imageHint": "fish pond"
+    },
+    {
+      "id": "forestry-path",
+      "description": "A path through a dense, green forest.",
+      "imageUrl": "https://picsum.photos/seed/forest/400/300",
+      "imageHint": "forest path"
+    }
+  ]
+}
