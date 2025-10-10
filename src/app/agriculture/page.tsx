@@ -1,4 +1,4 @@
-import { FileText, Lightbulb, Wheat, Sprout } from "lucide-react";
+import { FileText, Lightbulb, Wheat, Sprout, Bug } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -7,12 +7,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import SummarizeAdvisoryForm from "./summarize-advisory-form";
-import { StatCard } from "@/components/stat-card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
 
 export default function AgriculturePage() {
   return (
     <div className="p-4 md:p-6 grid gap-6 grid-cols-1 lg:grid-cols-3">
       <div className="lg:col-span-2 space-y-6">
+         <Card>
+          <CardHeader>
+            <CardTitle className="font-headline text-lg flex items-center gap-2">
+              <Bug className="text-primary" />
+              AI Pest & Disease Detection
+            </CardTitle>
+            <CardDescription>
+              Upload a photo of a plant to identify it and diagnose any
+              potential health issues.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild>
+                <Link href="/agriculture/pest-detection">Analyze Plant Photo</Link>
+            </Button>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className="font-headline text-lg flex items-center gap-2">
@@ -34,31 +54,19 @@ export default function AgriculturePage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-headline text-lg">
-              Crop Planning
+              AI Crop Planning
             </CardTitle>
             <CardDescription>
-              AI recommendations for your next crop cycle.
+              Get AI recommendations for your next crop cycle.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
-              <div>
-                <p className="font-semibold">Next Crop: Maize</p>
-                <p className="text-sm text-muted-foreground">
-                  Optimal sowing window: Jul 25 - Aug 10
-                </p>
-              </div>
-              <Wheat className="w-8 h-8 text-yellow-600" />
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
-              <div>
-                <p className="font-semibold">Rotation: Mung Beans</p>
-                <p className="text-sm text-muted-foreground">
-                  Improves nitrogen levels by 15%
-                </p>
-              </div>
-              <Sprout className="w-8 h-8 text-green-600" />
-            </div>
+             <p className="mb-4 text-sm text-muted-foreground">
+              Provide your farm's details to get a customized crop plan from our AI assistant.
+            </p>
+            <Button asChild>
+              <Link href="/agriculture/crop-planning">Generate Crop Plan</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>

@@ -24,6 +24,7 @@ const pageTitles: { [key: string]: string } = {
   "/credit-scoring": "AI Credit Scoring",
   "/agriculture/crop-planning": "AI Crop Planning",
   "/forestry/analysis": "AI Forestry Analysis",
+  "/agriculture/pest-detection": "AI Pest & Disease Detection",
 };
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {

@@ -16,6 +16,7 @@ import {
   CloudRain,
   TreePine,
   Wind,
+  Bot,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +38,7 @@ const domainModules = [
     description: "Crops & Horticulture",
     icon: Sprout,
     href: "/agriculture",
-    stats: "3 Active Crops",
+    stats: "AI Insights",
     color: "bg-green-100 dark:bg-green-900/50",
     textColor: "text-green-700 dark:text-green-300",
   },
@@ -55,7 +56,7 @@ const domainModules = [
     description: "Fisheries",
     icon: Fish,
     href: "/aquaculture",
-    stats: "4 Ponds Monitored",
+    stats: "AI Optimal",
     color: "bg-blue-100 dark:bg-blue-900/50",
     textColor: "text-blue-700 dark:text-blue-300",
   },
@@ -64,7 +65,7 @@ const domainModules = [
     description: "Agroforestry",
     icon: TreePine,
     href: "/forestry",
-    stats: "2,500 Trees",
+    stats: "AI Assessed",
     color: "bg-emerald-100 dark:bg-emerald-900/50",
     textColor: "text-emerald-700 dark:text-emerald-300",
   },
@@ -82,11 +83,11 @@ const domainModules = [
 const WeatherIcon = ({ condition }: { condition: WeatherData['conditionIcon'] }) => {
   switch (condition) {
     case 'Sun':
-      return <Sun className="w-12 h-12 text-yellow-500" />;
+      return <Sun className="w-12 h-12 text-yellow-400" />;
     case 'Cloudy':
       return <Cloudy className="w-12 h-12 text-gray-400" />;
     case 'CloudRain':
-      return <CloudRain className="w-12 h-12 text-blue-500" />;
+      return <CloudRain className="w-12 h-12 text-blue-400" />;
     case 'Wind':
       return <Wind className="w-12 h-12 text-gray-500" />;
     default:
@@ -183,7 +184,10 @@ export default async function DashboardPage() {
             <p className="text-muted-foreground text-sm">{mod.description}</p>
           </CardContent>
           <CardFooter className="flex justify-between items-center">
-            <Badge variant="secondary">{mod.stats}</Badge>
+            <Badge variant="secondary" className="flex items-center gap-1">
+              {mod.title !== 'Livestock' && mod.title !== 'Credit Scoring' && <Bot size={14}/>}
+              {mod.stats}
+            </Badge>
             <Button variant="ghost" size="sm" asChild>
               <Link href={mod.href}>
                 Manage <ArrowRight className="w-4 h-4 ml-2" />
