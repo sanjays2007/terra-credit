@@ -1,11 +1,6 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+'use client';
+
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -13,39 +8,71 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { StatCard } from "@/components/stat-card";
-import { livestockData } from "@/lib/data";
-import { PlusCircle, Droplet, HeartPulse, Activity } from "lucide-react";
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { StatCard } from '@/components/stat-card';
+import { initialLivestockData } from '@/lib/data';
+import type { Livestock } from '@/lib/types';
+import { PlusCircle, Droplet, HeartPulse, Activity } from 'lucide-react';
+import { AddAnimalForm } from './add-animal-form';
+import { Button } from '@/components/ui/button';
 
 const getStatusVariant = (
-  status: "Healthy" | "Sick" | "Monitoring"
-): "default" | "destructive" | "secondary" => {
+  status: 'Healthy' | 'Sick' | 'Monitoring'
+): 'default' | 'destructive' | 'secondary' => {
   switch (status) {
-    case "Healthy":
-      return "default";
-    case "Sick":
-      return "destructive";
-    case "Monitoring":
-      return "secondary";
+    case 'Healthy':
+      return 'default';
+    case 'Sick':
+      return 'destructive';
+    case 'Monitoring':
+      return 'secondary';
   }
 };
 
 export default function LivestockPage() {
+  const [livestockData, setLivestockData] =
+    useState<Livestock[]>(initialLivestockData);
+
+  const handleAddAnimal = (newAnimal: Omit<Livestock, 'id'>) => {
+    setLivestockData((prevData) => [
+      ...prevData,
+      { ...newAnimal, id: `L${(prevData.length + 1).toString().padStart(3, '0')}` },
+    ]);
+  };
+
   const totalAnimals = livestockData.length;
   const healthyAnimals = livestockData.filter(
-    (l) => l.healthStatus === "Healthy"
+    (l) => l.healthStatus === 'Healthy'
   ).length;
   const avgProduction =
     livestockData
       .map((l) => parseFloat(l.productionRate))
-      .filter(Boolean)
-      .reduce((acc, cur) => acc + cur, 0) / totalAnimals;
+      .filter((rate) => !isNaN(rate))
+      .reduce((acc, cur) => acc + cur, 0) /
+      livestockData.filter((l) => !isNaN(parseFloat(l.productionRate))).length ||
+    0;
 
   return (
     <div className="p-4 md:p-6 space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+       <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-headline">Livestock Overview</h2>
+        <AddAnimalForm onAddAnimal={handleAddAnimal}>
+          <Button>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add New Animal
+          </Button>
+        </AddAnimalForm>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <StatCard
           title="Total Livestock"
           value={totalAnimals.toString()}
@@ -56,9 +83,11 @@ export default function LivestockPage() {
           title="Healthy Animals"
           value={`${healthyAnimals} / ${totalAnimals}`}
           icon={HeartPulse}
-          description={`${((healthyAnimals / totalAnimals) * 100).toFixed(
-            0
-          )}% health rate`}
+          description={`${
+            totalAnimals > 0
+              ? ((healthyAnimals / totalAnimals) * 100).toFixed(0)
+              : 0
+          }% health rate`}
           iconClass="text-green-500"
         />
         <StatCard
@@ -68,16 +97,6 @@ export default function LivestockPage() {
           description="Average daily milk yield"
           iconClass="text-blue-500"
         />
-        <Card>
-            <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Button className="w-full">
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add New Animal
-                </Button>
-            </CardContent>
-        </Card>
       </div>
 
       <Card>

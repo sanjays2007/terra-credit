@@ -12,6 +12,8 @@ import {
   MoreVertical,
   Sprout,
   Sun,
+  Cloudy,
+  CloudRain,
   TreePine,
   Wind,
 } from "lucide-react";
@@ -26,6 +28,8 @@ import {
 } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Badge } from "@/components/ui/badge";
+import { getWeather } from "@/ai/flows/get-weather";
+import type { WeatherData } from "@/ai/flows/get-weather";
 
 const domainModules = [
   {
@@ -51,7 +55,7 @@ const domainModules = [
     description: "Fisheries",
     icon: Fish,
     href: "/aquaculture",
-stats: "4 Ponds Monitored",
+    stats: "4 Ponds Monitored",
     color: "bg-blue-100 dark:bg-blue-900/50",
     textColor: "text-blue-700 dark:text-blue-300",
   },
@@ -75,8 +79,25 @@ stats: "4 Ponds Monitored",
   },
 ];
 
-export default function DashboardPage() {
+const WeatherIcon = ({ condition }: { condition: WeatherData['conditionIcon'] }) => {
+  switch (condition) {
+    case 'Sun':
+      return <Sun className="w-12 h-12 text-yellow-500" />;
+    case 'Cloudy':
+      return <Cloudy className="w-12 h-12 text-gray-400" />;
+    case 'CloudRain':
+      return <CloudRain className="w-12 h-12 text-blue-500" />;
+    case 'Wind':
+      return <Wind className="w-12 h-12 text-gray-500" />;
+    default:
+      return <Cloud className="w-12 h-12 text-gray-400" />;
+  }
+};
+
+
+export default async function DashboardPage() {
   const farmMapImage = PlaceHolderImages.find((img) => img.id === "farm-map");
+  const weatherData = await getWeather("Anand, Gujarat");
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-4 md:p-6">
@@ -86,27 +107,27 @@ export default function DashboardPage() {
           <CardTitle className="font-headline text-lg">
             Localized Weather
           </CardTitle>
-          <CardDescription>Anand, Gujarat</CardDescription>
+          <CardDescription>{weatherData.location}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-around text-center p-4 rounded-lg bg-secondary/50">
             <div className="flex flex-col items-center gap-1">
-              <Sun className="w-12 h-12 text-yellow-500" />
-              <p className="text-4xl font-bold">34°C</p>
-              <p className="text-muted-foreground">Sunny</p>
+              <WeatherIcon condition={weatherData.conditionIcon} />
+              <p className="text-4xl font-bold">{weatherData.temperature}°C</p>
+              <p className="text-muted-foreground">{weatherData.condition}</p>
             </div>
             <div className="space-y-4 text-sm">
               <div className="flex items-center gap-2">
                 <Droplets className="w-5 h-5 text-blue-400" />
-                <span>Humidity: 65%</span>
+                <span>Humidity: {weatherData.humidity}%</span>
               </div>
               <div className="flex items-center gap-2">
                 <Wind className="w-5 h-5 text-gray-400" />
-                <span>Wind: 12 km/h</span>
+                <span>Wind: {weatherData.windSpeed} km/h</span>
               </div>
               <div className="flex items-center gap-2">
                 <Cloud className="w-5 h-5 text-gray-400" />
-                <span>Precipitation: 5%</span>
+                <span>Precipitation: {weatherData.precipitation}%</span>
               </div>
             </div>
           </div>

@@ -1,4 +1,3 @@
-// This file is machine-generated - edit with caution!
 'use server';
 /**
  * @fileOverview A crop planning AI agent that provides recommendations for crop planning and rotation schedules based on farm data.
@@ -14,64 +13,64 @@ import {z} from 'genkit';
 const CropPlanInputSchema = z.object({
   farmLocation: z
     .string()
-    .describe('The geographical location of the farm (e.g., latitude, longitude).'),
+    .describe('The geographical location of the farm (e.g., latitude, longitude, or city/region).'),
   soilHealthData: z
     .string()
-    .describe('Data on soil health, including NPK levels and pH analysis.'),
+    .describe('Data on soil health, including NPK levels, pH analysis, and organic matter content.'),
   weatherPatterns: z
     .string()
-    .describe('Historical weather patterns and forecasts for the farm location.'),
+    .describe('Historical weather patterns and forecasts for the farm location, including rainfall and temperature trends.'),
   historicalYieldData: z
     .string()
-    .describe('Historical crop yield data for the farm.'),
-  crops: z
+    .describe('Historical crop yield data for the farm over the past few seasons.'),
+  availableCrops: z
     .string()
-    .describe('List of crop names that the farmer has available to plant.'),
+    .describe('A list of crops the farmer is considering or has available to plant.'),
 });
 export type CropPlanInput = z.infer<typeof CropPlanInputSchema>;
 
 const CropPlanOutputSchema = z.object({
   recommendedCrops: z
     .string()
-    .describe('Recommended crops for the next planting season.'),
+    .describe('A list of the top recommended crops for the next planting season, with a brief justification for each.'),
   rotationSchedule: z
     .string()
-    .describe('Recommended crop rotation schedule for the next few years.'),
-  plantingStrategy: z
-    .string()
-    .describe('Specific planting strategies to maximize yields.'),
-  riskAssessment: z.string().describe('Risks.'),
-});
-export type CropPlanOutput = z.infer<typeof CropPlanOutputSchema>;
+... (38 lines left)
+File too long. Skipping...
+     * Show
+     */
+    'use server';
 
-export async function getCropPlan(input: CropPlanInput): Promise<CropPlanOutput> {
-  return cropPlanFlow(input);
-}
+    import {Button} from '@/components/ui/button';
+    import {
+      Card,
+      CardContent,
+      CardDescription,
+      CardHeader,
+      CardTitle,
+    } from '@/components/ui/card';
+    import Link from 'next/link';
+    import {Bot} from 'lucide-react';
 
-const prompt = ai.definePrompt({
-  name: 'cropPlanPrompt',
-  input: {schema: CropPlanInputSchema},
-  output: {schema: CropPlanOutputSchema},
-  prompt: `You are an expert agricultural advisor. Based on the provided farm data, recommend the best crops, rotation schedule, planting strategies, and risk assessment for the farmer.
-
-Farm Location: {{{farmLocation}}}
-Soil Health Data: {{{soilHealthData}}}
-Weather Patterns: {{{weatherPatterns}}}
-Historical Yield Data: {{{historicalYieldData}}}
-Crops: {{{crops}}}
-
-Consider all the provided information to provide the best recommendations.
-`,
-});
-
-const cropPlanFlow = ai.defineFlow(
-  {
-    name: 'cropPlanFlow',
-    inputSchema: CropPlanInputSchema,
-    outputSchema: CropPlanOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+    export default function CropPlanningPage() {
+      return (
+        <div className="p-4 md:p-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-headline text-lg flex items-center gap-2">
+                <Bot className="text-primary" />
+                AI Crop Planning Assistant
+              </CardTitle>
+              <CardDescription>
+                Get a customized crop plan by providing details about your farm.
+                The AI will analyze the data to provide optimal recommendations.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <CropPlanningForm />
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+    ```

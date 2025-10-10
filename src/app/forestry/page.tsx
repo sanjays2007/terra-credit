@@ -9,6 +9,7 @@ import {
 import { StatCard } from "@/components/stat-card";
 import { forestryData } from "@/lib/data";
 import { TreePine, Leaf, Bot, CircleDollarSign } from "lucide-react";
+import Link from "next/link";
 
 export default function ForestryPage() {
     const totalTrees = forestryData.length;
@@ -45,6 +46,26 @@ export default function ForestryPage() {
           description="AI-assessed risk level"
         />
       </div>
+
+       <Card>
+        <CardHeader>
+          <CardTitle className="font-headline text-lg flex items-center gap-2">
+            <Bot className="text-primary" />
+            AI Forestry Analysis
+          </CardTitle>
+          <CardDescription>
+            Get AI-powered recommendations based on your tree inventory data.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="mb-4 text-sm text-muted-foreground">
+            Analyze your current inventory to receive suggestions for improving timber value, carbon sequestration, and overall forest health.
+          </p>
+          <Button asChild>
+            <Link href="/forestry/analysis">Analyze Inventory</Link>
+          </Button>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

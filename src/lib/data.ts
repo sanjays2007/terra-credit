@@ -1,6 +1,6 @@
 import type { Livestock, WaterQuality, Tree } from "./types";
 
-export const livestockData: Livestock[] = [
+export const initialLivestockData: Livestock[] = [
   {
     id: "L001",
     breed: "Gir",
