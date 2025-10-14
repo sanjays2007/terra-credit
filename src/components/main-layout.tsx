@@ -56,7 +56,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
              className="absolute left-4 top-3.5 hidden md:flex"
              asChild
            >
-             <Link href={isSubPage ? "/agriculture" : "/"}>
+             <Link href={isSubPage ? (pathname.startsWith('/agriculture') ? '/agriculture' : (pathname.startsWith('/forestry') ? '/forestry' : '/aquaculture')) : "/"}>
                <ArrowLeft className="mr-2 h-4 w-4" />
                Back
              </Link>
