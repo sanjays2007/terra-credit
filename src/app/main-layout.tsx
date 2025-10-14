@@ -26,6 +26,9 @@ const pageTitles: { [key: string]: string } = {
   "/agriculture/crop-planning": "AI Crop Planning",
   "/forestry/analysis": "AI Forestry Analysis",
   "/agriculture/pest-detection": "AI Pest & Disease Detection",
+  "/agriculture/irrigation-scheduling": "AI Irrigation Scheduling",
+  "/agriculture/fertilizer-recommendation": "AI Fertilizer Recommendation",
+  "/agriculture/yield-prediction": "AI Yield Prediction",
 };
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {

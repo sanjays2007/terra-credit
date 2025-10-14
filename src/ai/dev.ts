@@ -8,3 +8,6 @@ import '@/ai/ai-forestry-analysis.ts';
 import '@/ai/flows/get-weather.ts';
 import '@/ai/flows/diagnose-plant-flow.ts';
 import '@/ai/ai-crop-planning.ts';
+import '@/ai/ai-fertilizer-recommendation.ts';
+import '@/ai/ai-irrigation-scheduling.ts';
+import '@/ai/ai-yield-prediction.ts';
