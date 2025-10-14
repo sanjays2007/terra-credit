@@ -1,0 +1,19 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isUserAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Ponds Collection
+    match /ponds/{pondId} {
+      // Anyone can read pond data
+      allow read: if true;
+      // Only authenticated users can create, update, or delete ponds
+      allow write: if isUserAuthenticated();
+    }
+  }
+}

@@ -1,57 +1,108 @@
+'use client';
 
-"use client";
-
-import Link from "next/link";
+import Link from 'next/link';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
-} from "@/components/ui/chart";
-import { StatCard } from "@/components/stat-card";
-import { waterQualityData } from "@/lib/data";
-import { Fish, Waves, Thermometer, Droplets, Bot } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/chart';
+import { StatCard } from '@/components/stat-card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { waterQualityData } from '@/lib/data';
+import { Fish, Waves, Thermometer, Droplets, Bot } from 'lucide-react';
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from 'recharts';
+import { Button } from '@/components/ui/button';
+import { useCollection } from '@/firebase/firestore/use-collection';
+import { useMemo } from 'react';
+import { useFirebase } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const chartConfig = {
   temperature: {
-    label: "Temp (°C)",
-    color: "hsl(var(--chart-1))",
+    label: 'Temp (°C)',
+    color: 'hsl(var(--chart-1))',
   },
   oxygen: {
-    label: "Oxygen (mg/L)",
-    color: "hsl(var(--chart-2))",
+    label: 'Oxygen (mg/L)',
+    color: 'hsl(var(--chart-2))',
   },
   ph: {
-    label: "pH",
-    color: "hsl(var(--chart-3))",
+    label: 'pH',
+    color: 'hsl(var(--chart-3))',
   },
   turbidity: {
-    label: "Turbidity (NTU)",
-    color: "hsl(var(--chart-4))",
+    label: 'Turbidity (NTU)',
+    color: 'hsl(var(--chart-4))',
   },
+};
+
+const getStatusVariant = (
+  status: 'Optimal' | 'Warning' | 'Alert'
+): 'default' | 'destructive' | 'secondary' => {
+  switch (status) {
+    case 'Optimal':
+      return 'default';
+    case 'Alert':
+      return 'destructive';
+    case 'Warning':
+      return 'secondary';
+  }
 };
 
 export default function AquaculturePage() {
   const latestData = waterQualityData[waterQualityData.length - 1];
 
+  const { firestore } = useFirebase();
+
+  const pondsQuery = useMemo(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'ponds'), orderBy('name'));
+  }, [firestore]);
+
+  const { data: ponds, loading } = useCollection(pondsQuery);
+
+  const stats = useMemo(() => {
+    if (!ponds) return { optimal: 0, total: 0 };
+    const optimalPonds = ponds.filter(
+      (p) => p.status === 'Optimal'
+    ).length;
+    return { optimal: optimalPonds, total: ponds.length };
+  }, [ponds]);
+
+
   return (
     <div className="p-4 md:p-6 space-y-6">
-       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Pond Status"
-          value="Optimal"
+          value={`${stats.optimal}/${stats.total}`}
           icon={Waves}
-          description="All parameters within range"
+          description={stats.total > 0 ? `${((stats.optimal / stats.total) * 100).toFixed(0)}% Optimal` : "No ponds found"}
           iconClass="text-green-500"
         />
         <StatCard
@@ -69,114 +120,90 @@ export default function AquaculturePage() {
           iconClass="text-blue-500"
         />
         <StatCard
-          title="Fish Stock"
+          title="Total Fish Stock"
           value="~5,200"
           icon={Fish}
-          description="Rohu & Catla species"
+          description="Across all ponds"
         />
       </div>
 
       <Card>
-          <CardHeader>
-            <CardTitle className="font-headline text-lg flex items-center gap-2">
-              <Bot className="text-primary" />
-              AI Water Quality Analysis
-            </CardTitle>
-            <CardDescription>
-              Get AI-powered recommendations based on your pond's water quality parameters.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Enter your current water quality readings to receive an analysis and suggestions for maintaining a healthy aquatic environment.
-            </p>
-            <Button asChild>
-              <Link href="/aquaculture/analysis">Perform Analysis</Link>
-            </Button>
-          </CardContent>
-        </Card>
-
+        <CardHeader>
+          <CardTitle className="font-headline text-lg flex items-center gap-2">
+            <Bot className="text-primary" />
+            AI Water Quality Analysis
+          </CardTitle>
+          <CardDescription>
+            Get AI-powered recommendations based on your pond's water quality
+            parameters.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="mb-4 text-sm text-muted-foreground">
+            Enter your current water quality readings to receive an analysis and
+            suggestions for maintaining a healthy aquatic environment.
+          </p>
+          <Button asChild>
+            <Link href="/aquaculture/analysis">Perform Analysis</Link>
+          </Button>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
           <CardTitle className="font-headline text-lg">
-            Water Quality Trends - Pond A
+            Digital Pond Registry
           </CardTitle>
           <CardDescription>
-            Real-time monitoring of critical water parameters over the last 7
-            days.
+            Real-time status of all aquaculture ponds.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={chartConfig} className="h-72 w-full">
-            <AreaChart data={waterQualityData}>
-              <defs>
-                <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-temperature)" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="var(--color-temperature)" stopOpacity={0.1}/>
-                </linearGradient>
-                <linearGradient id="colorOxygen" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-oxygen)" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="var(--color-oxygen)" stopOpacity={0.1}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="date"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                tickFormatter={(value) => value.slice(0, 6)}
-              />
-               <YAxis
-                yAxisId="left"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                domain={[24, 30]}
-                tickFormatter={(value) => `${value}°C`}
-              />
-               <YAxis
-                yAxisId="right"
-                orientation="right"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                domain={[6, 8]}
-                tickFormatter={(value) => `${value}`}
-              />
-              <Tooltip
-                cursor={false}
-                content={<ChartTooltipContent indicator="dot" />}
-              />
-              <Area
-                dataKey="temperature"
-                type="natural"
-                fill="url(#colorTemp)"
-                stroke="var(--color-temperature)"
-                stackId="a"
-                yAxisId="left"
-              />
-              <Area
-                dataKey="oxygen"
-                type="natural"
-                fill="url(#colorOxygen)"
-                stroke="var(--color-oxygen)"
-                stackId="b"
-                yAxisId="right"
-              />
-               <Area
-                dataKey="ph"
-                type="natural"
-                fill="var(--color-ph)"
-                stroke="var(--color-ph)"
-                stackId="c"
-                yAxisId="right"
-                opacity={0.3}
-              />
-              <ChartLegend content={<ChartLegendContent />} />
-            </AreaChart>
-          </ChartContainer>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Pond Name</TableHead>
+                <TableHead>Fish Species</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Temperature</TableHead>
+                <TableHead>Oxygen (mg/L)</TableHead>
+                <TableHead>pH</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {loading && Array.from({ length: 3 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                  <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-12" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-12" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-12" /></TableCell>
+                </TableRow>
+              ))}
+              {!loading && ponds?.map((pond) => (
+                <TableRow key={pond.id}>
+                  <TableCell className="font-medium">{pond.name}</TableCell>
+                  <TableCell>{pond.fishSpecies}</TableCell>
+                  <TableCell>
+                    <Badge variant={getStatusVariant(pond.status as 'Optimal' | 'Warning' | 'Alert')}>
+                      {pond.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{pond.temperature}°C</TableCell>
+                  <TableCell>{pond.oxygen} mg/L</TableCell>
+                  <TableCell>{pond.ph}</TableCell>
+                </TableRow>
+              ))}
+               {!loading && ponds?.length === 0 && (
+                <TableRow>
+                    <TableCell colSpan={6} className="text-center h-24">
+                        No ponds found.
+                    </TableCell>
+                </TableRow>
+               )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>
