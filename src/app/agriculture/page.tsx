@@ -13,13 +13,6 @@ import Link from 'next/link';
 import { SummarizeAdvisoryForm } from './summarize-advisory-form';
 
 const agricultureTools = [
-    {
-    title: 'Integrated Farm Advisor',
-    description: 'Get a complete, unified operational plan for your crop season from an AI co-pilot.',
-    icon: BrainCircuit,
-    href: '/agriculture/integrated-advisor',
-    buttonText: 'Get Integrated Plan',
-  },
   {
     title: 'Crop Planning Assistant',
     description: 'Get a customized crop plan by analyzing your farm\'s location, soil, and weather.',
@@ -76,22 +69,30 @@ export default function AgriculturePage() {
   return (
     <div className="p-4 md:p-6 space-y-6">
       
-       <Card>
-          <CardHeader>
-            <CardTitle className="font-headline text-lg flex items-center gap-2">
-              <Lightbulb className="text-primary" />
-              AI-Powered Advisory Summarizer
-            </CardTitle>
-            <CardDescription>
-              Upload a PDF from your local extension office to get a summary of
-              actionable recommendations.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <SummarizeAdvisoryForm />
-          </CardContent>
-        </Card>
-
+      <Card className="bg-gradient-to-br from-secondary/50 to-background">
+        <CardHeader>
+          <CardTitle className="font-headline text-xl flex items-center gap-2">
+            <BrainCircuit className="text-primary w-8 h-8" />
+            Integrated Farm Operations Advisor
+          </CardTitle>
+          <CardDescription>
+            Your master AI co-pilot. Get a complete, unified operational plan for your crop season, orchestrating all the tools below into a single, actionable strategy.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="mb-4 text-sm text-muted-foreground">
+              Start here to generate a comprehensive plan for your chosen crop, from planting to market.
+          </p>
+        </CardContent>
+        <CardFooter>
+          <Button asChild size="lg">
+              <Link href="/agriculture/integrated-advisor">
+                  Generate Integrated Plan
+              </Link>
+          </Button>
+        </CardFooter>
+      </Card>
+      
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {agricultureTools.map((tool) => (
           <Card key={tool.title} className="flex flex-col">
@@ -105,9 +106,7 @@ export default function AgriculturePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
-               <p className="mb-4 text-sm text-muted-foreground">
-                    Utilize AI to enhance your farming intelligence and decision-making.
-                </p>
+               {/* This space can be used for a small insight or link if needed */}
             </CardContent>
             <CardFooter>
                  <Button asChild className="w-full">
@@ -119,6 +118,23 @@ export default function AgriculturePage() {
           </Card>
         ))}
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-headline text-lg flex items-center gap-2">
+            <Lightbulb className="text-primary" />
+            AI-Powered Advisory Summarizer
+          </CardTitle>
+          <CardDescription>
+            Upload a PDF from your local extension office to get a summary of
+            actionable recommendations.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SummarizeAdvisoryForm />
+        </CardContent>
+      </Card>
+
     </div>
   );
 }
