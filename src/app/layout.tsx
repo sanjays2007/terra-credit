@@ -3,7 +3,6 @@ import { Toaster } from "@/components/ui/toaster";
 import MainLayout from "@/components/main-layout";
 import { Inter, Space_Grotesk } from 'next/font/google'
 import "./globals.css";
-import { FirebaseClientProvider } from "@/firebase/client-provider";
 
 
 const inter = Inter({ 
@@ -31,9 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-body antialiased`}>
-        <FirebaseClientProvider>
           <MainLayout>{children}</MainLayout>
-        </FirebaseClientProvider>
         <Toaster />
       </body>
     </html>
