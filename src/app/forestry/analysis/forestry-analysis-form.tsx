@@ -21,7 +21,8 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader, AlertCircle, Sparkles, Trees, Leaf } from 'lucide-react';
+import { Loader, AlertCircle, Sparkles, Trees, Leaf, CircleDollarSign, Axe, CornerRightUp } from 'lucide-react';
+import { StatCard } from '@/components/stat-card';
 
 const formSchema = z.object({
   inventoryData: z.string().min(20, 'Please provide more inventory data.'),
@@ -114,7 +115,7 @@ export function ForestryAnalysisForm() {
       {loading && (
         <Card className="p-6 flex flex-col items-center justify-center text-center animate-pulse">
           <Loader className="w-8 h-8 text-primary animate-spin mb-4" />
-          <p className="font-semibold">Analyzing inventory...</p>
+          <p className="font-semibold">AI is analyzing your inventory...</p>
           <p className="text-sm text-muted-foreground">This may take a moment.</p>
         </Card>
       )}
@@ -124,29 +125,62 @@ export function ForestryAnalysisForm() {
           <CardHeader>
             <CardTitle className="font-headline text-lg flex items-center gap-2">
               <Trees />
-              Forestry Analysis
+              Forestry Management Report
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
+            <div className="grid gap-4 md:grid-cols-3">
+                 <StatCard
+                    title="Estimated Timber Value"
+                    value={`$${state.result.totalTimberValue.toLocaleString()}`}
+                    icon={CircleDollarSign}
+                    description="Based on biomass at $2.5/kg"
+                    iconClass="text-yellow-600"
+                />
+                 <StatCard
+                    title="Carbon Sequestration"
+                    value={`${(state.result.totalCarbonSequestration / 1000).toFixed(2)} tCO₂e`}
+                    icon={Leaf}
+                    description="Total captured carbon"
+                    iconClass="text-green-500"
+                />
+                 <StatCard
+                    title="Most Valuable Species"
+                    value={state.result.mostValuableSpecies}
+                    icon={Trees}
+                    description="Highest value contributor"
+                />
+            </div>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-md">Overall Analysis</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-sm text-muted-foreground prose dark:prose-invert max-w-none">{state.result.overallAnalysis}</p>
+                </CardContent>
+            </Card>
+
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="bg-background">
                 <CardHeader className="flex-row items-center gap-2 pb-2">
-                  <h4 className="font-semibold">Analysis</h4>
+                  <Axe className="w-5 h-5 text-destructive" />
+                  <h4 className="font-semibold">Harvest Recommendations</h4>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground prose dark:prose-invert">
-                    {state.result.analysis}
+                  <p className="text-sm text-muted-foreground prose dark:prose-invert max-w-none">
+                    {state.result.harvestRecommendations}
                   </p>
                 </CardContent>
               </Card>
               <Card className="bg-background">
                 <CardHeader className="flex-row items-center gap-2 pb-2">
-                  <Leaf className="w-5 h-5 text-green-500" />
-                  <h4 className="font-semibold">Recommendations</h4>
+                  <CornerRightUp className="w-5 h-5 text-green-500" />
+                  <h4 className="font-semibold">Growth Priorities</h4>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground prose dark:prose-invert">
-                    {state.result.recommendations}
+                  <p className="text-sm text-muted-foreground prose dark:prose-invert max-w-none">
+                    {state.result.growthPriorities}
                   </p>
                 </CardContent>
               </Card>
