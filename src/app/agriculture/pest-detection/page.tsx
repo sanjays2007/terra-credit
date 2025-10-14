@@ -1,3 +1,4 @@
+
 import {
     Card,
     CardContent,
@@ -5,7 +6,7 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card";
-  import { PestDetectionForm } from "./pest-detection-form";
+  import { PlantDiagnosisForm } from "./pest-detection-form";
   import { Bot } from "lucide-react";
   
   export default function PestDetectionPage() {
@@ -22,7 +23,7 @@ import {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <PestDetectionForm />
+            <PlantDiagnosisForm />
           </CardContent>
         </Card>
       </div>

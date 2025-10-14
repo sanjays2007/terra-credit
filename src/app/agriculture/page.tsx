@@ -1,34 +1,39 @@
-import { FileText, Lightbulb, Wheat, Sprout, Bug } from "lucide-react";
+
+import { Bot, Lightbulb, Sprout, Bug } from 'lucide-react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import SummarizeAdvisoryForm from "./summarize-advisory-form";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { SummarizeAdvisoryForm } from './summarize-advisory-form';
 
 export default function AgriculturePage() {
   return (
-    <div className="p-4 md:p-6 grid gap-6 grid-cols-1 lg:grid-cols-3">
-      <div className="lg:col-span-2 space-y-6">
-         <Card>
+    <div className="p-4 md:p-6 grid gap-6 grid-cols-1 lg:grid-cols-2">
+      <div className="space-y-6">
+        <Card>
           <CardHeader>
             <CardTitle className="font-headline text-lg flex items-center gap-2">
-              <Bug className="text-primary" />
-              AI Pest & Disease Detection
+              <Sprout className="text-primary" />
+              AI Crop Planning Assistant
             </CardTitle>
             <CardDescription>
-              Upload a photo of a plant to identify it and diagnose any
-              potential health issues.
+              Get a customized crop plan by providing details about your farm.
+              The AI will analyze the data to provide optimal recommendations.
             </CardDescription>
           </CardHeader>
           <CardContent>
+            <p className="mb-4 text-sm text-muted-foreground">
+              Our AI can analyze your farm's location, soil, and weather to recommend the best crops.
+            </p>
             <Button asChild>
-                <Link href="/agriculture/pest-detection">Analyze Plant Photo</Link>
+              <Link href="/agriculture/crop-planning">
+                Get Crop Plan
+              </Link>
             </Button>
           </CardContent>
         </Card>
@@ -53,19 +58,24 @@ export default function AgriculturePage() {
       <div className="lg:col-span-1 space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle className="font-headline text-lg">
-              AI Crop Planning
+            <CardTitle className="font-headline text-lg flex items-center gap-2">
+              <Bug className="text-primary" />
+              AI Pest & Disease Detection
             </CardTitle>
             <CardDescription>
-              Get AI recommendations for your next crop cycle.
+              Upload a photo of a plant to identify it and diagnose any
+              potential health issues.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-             <p className="mb-4 text-sm text-muted-foreground">
-              Provide your farm's details to get a customized crop plan from our AI assistant.
+            <p className="mb-4 text-sm text-muted-foreground">
+              Our AI can identify plants and check for signs of pests or
+              diseases from a single image.
             </p>
             <Button asChild>
-              <Link href="/agriculture/crop-planning">Generate Crop Plan</Link>
+              <Link href="/agriculture/pest-detection">
+                Analyze Plant Photo
+              </Link>
             </Button>
           </CardContent>
         </Card>

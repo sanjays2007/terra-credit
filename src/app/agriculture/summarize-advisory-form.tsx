@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -13,7 +14,7 @@ type SummarizeState = {
   error?: string;
 };
 
-export default function SummarizeAdvisoryForm() {
+export function SummarizeAdvisoryForm() {
   const [file, setFile] = useState<File | null>(null);
   const [state, setState] = useState<SummarizeState>({ summary: "" });
   const [loading, setLoading] = useState(false);

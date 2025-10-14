@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -36,7 +37,7 @@ type DiagnosisState = {
   error?: string;
 };
 
-export function PestDetectionForm() {
+export function PlantDiagnosisForm() {
   const [state, setState] = useState<DiagnosisState>({ result: null });
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
