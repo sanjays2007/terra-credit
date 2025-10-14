@@ -29,6 +29,9 @@ const pageTitles: { [key: string]: string } = {
   "/agriculture/irrigation-scheduling": "AI Irrigation Scheduling",
   "/agriculture/fertilizer-recommendation": "AI Fertilizer Recommendation",
   "/agriculture/yield-prediction": "AI Yield Prediction",
+  "/agriculture/integrated-advisor": "Integrated Farm Advisor",
+  "/agriculture/market-analysis": "AI Market Analysis",
+  "/agriculture/ab-testing": "A/B Testing Assistant",
 };
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -53,7 +56,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
              className="absolute left-4 top-3.5 hidden md:flex"
              asChild
            >
-             <Link href="/">
+             <Link href={isSubPage ? "/agriculture" : "/"}>
                <ArrowLeft className="mr-2 h-4 w-4" />
                Back
              </Link>
