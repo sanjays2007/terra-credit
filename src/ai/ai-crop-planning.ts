@@ -35,42 +35,50 @@ const CropPlanOutputSchema = z.object({
     .describe('A list of the top recommended crops for the next planting season, with a brief justification for each.'),
   rotationSchedule: z
     .string()
-... (38 lines left)
-File too long. Skipping...
-     * Show
-     */
-    'use server';
+    .describe(
+      'A recommended crop rotation schedule for the next 2-3 seasons to maintain soil health and maximize yield.'
+    ),
+  justification: z
+    .string()
+    .describe(
+      'A detailed justification for the recommendations, explaining how the data was used to arrive at the conclusions.'
+    ),
+});
+export type CropPlanOutput = z.infer<typeof CropPlanOutputSchema>;
 
-    import {Button} from '@/components/ui/button';
-    import {
-      Card,
-      CardContent,
-      CardDescription,
-      CardHeader,
-      CardTitle,
-    } from '@/components/ui/card';
-    import Link from 'next/link';
-    import {Bot} from 'lucide-react';
+export async function getCropPlan(input: CropPlanInput): Promise<CropPlanOutput> {
+  return cropPlanFlow(input);
+}
 
-    export default function CropPlanningPage() {
-      return (
-        <div className="p-4 md:p-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline text-lg flex items-center gap-2">
-                <Bot className="text-primary" />
-                AI Crop Planning Assistant
-              </CardTitle>
-              <CardDescription>
-                Get a customized crop plan by providing details about your farm.
-                The AI will analyze the data to provide optimal recommendations.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <CropPlanningForm />
-            </CardContent>
-          </Card>
-        </div>
-      );
-    }
-    ```
+const cropPlanPrompt = ai.definePrompt({
+  name: 'cropPlanPrompt',
+  input: {schema: CropPlanInputSchema},
+  output: {schema: CropPlanOutputSchema},
+  prompt: `You are an expert agronomist AI specializing in crop planning for small to medium-sized farms.
+
+  Analyze the following farm data to generate an optimal crop plan. The plan should maximize yield, promote soil health, and be resilient to local weather patterns.
+
+  - Farm Location: {{{farmLocation}}}
+  - Soil Health Data: {{{soilHealthData}}}
+  - Weather Patterns: {{{weatherPatterns}}}
+  - Historical Yields: {{{historicalYieldData}}}
+  - Available Crops: {{{availableCrops}}}
+
+  Please provide:
+  1.  'recommendedCrops': Suggest the best crops for the upcoming season.
+  2.  'rotationSchedule': Propose a multi-season rotation plan.
+  3.  'justification': Explain your reasoning in detail, referencing the provided data.
+  `,
+});
+
+const cropPlanFlow = ai.defineFlow(
+  {
+    name: 'cropPlanFlow',
+    inputSchema: CropPlanInputSchema,
+    outputSchema: CropPlanOutputSchema,
+  },
+  async input => {
+    const {output} = await cropPlanPrompt(input);
+    return output!;
+  }
+);

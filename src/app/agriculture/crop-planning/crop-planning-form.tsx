@@ -210,4 +210,3 @@ export function CropPlanningForm() {
     </div>
   );
 }
-
