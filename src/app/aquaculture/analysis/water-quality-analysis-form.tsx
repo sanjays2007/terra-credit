@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader, AlertCircle, Sparkles, Droplets } from "lucide-react";
+import { Loader, AlertCircle, Sparkles, Droplets, CheckCircle2, AlertTriangle } from "lucide-react";
 
 const formSchema = z.object({
   ph: z.coerce.number().min(0).max(14),
@@ -29,6 +29,7 @@ const formSchema = z.object({
   turbidity: z.coerce.number().min(0),
   ammonia: z.coerce.number().min(0),
   nitrate: z.coerce.number().min(0),
+  fishSpecies: z.string().min(3, "Please specify fish species."),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -47,10 +48,11 @@ export function WaterQualityAnalysisForm() {
     defaultValues: {
       ph: 7.2,
       oxygen: 6.8,
-      temperature: 26,
+      temperature: 28,
       turbidity: 12,
       ammonia: 0.1,
-      nitrate: 0.5,
+      nitrate: 5,
+      fishSpecies: "Rohu, Catla",
     },
   });
 
@@ -59,11 +61,7 @@ export function WaterQualityAnalysisForm() {
     setState({ result: null, error: undefined });
 
     try {
-      const input: WaterQualityInput = {
-        ...values,
-        fishSpecies: "Rohu, Catla", // Example, could be another form field
-      };
-      const result = await analyzeWaterQuality(input);
+      const result = await analyzeWaterQuality(values);
       setState({ result });
     } catch (error) {
       console.error(error);
@@ -80,7 +78,23 @@ export function WaterQualityAnalysisForm() {
     <div className="space-y-6">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <FormField
+              control={form.control}
+              name="fishSpecies"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fish Species</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Tilapia, Catla" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    The species in the pond being analyzed.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <FormField
               control={form.control}
               name="ph"
@@ -127,7 +141,7 @@ export function WaterQualityAnalysisForm() {
                 <FormItem>
                   <FormLabel>Turbidity (NTU)</FormLabel>
                   <FormControl>
-                    <Input type="number" step="0.1" {...field} />
+                    <Input type="number" step="1" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -196,9 +210,9 @@ export function WaterQualityAnalysisForm() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-             <Alert variant={state.result.isOptimal ? "default" : "destructive"}>
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>
+             <Alert variant={state.result.isOptimal ? "default" : "destructive"} className={state.result.isOptimal ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800" : ""}>
+                {state.result.isOptimal ? <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" /> : <AlertTriangle className="h-4 w-4" />}
+                <AlertTitle className={state.result.isOptimal ? "text-green-800 dark:text-green-200" : ""}>
                     {state.result.isOptimal ? "Optimal Conditions" : "Action Required"}
                 </AlertTitle>
                 <AlertDescription>
@@ -211,11 +225,11 @@ export function WaterQualityAnalysisForm() {
 
             <div>
               <h4 className="font-semibold mb-2">Detailed Analysis</h4>
-              <p className="text-sm text-muted-foreground prose">{state.result.analysis}</p>
+              <div className="text-sm text-muted-foreground prose dark:prose-invert max-w-none">{state.result.analysis}</div>
             </div>
             <div>
               <h4 className="font-semibold mb-2">Recommendations</h4>
-              <p className="text-sm text-muted-foreground prose">{state.result.recommendations}</p>
+              <div className="text-sm text-muted-foreground prose dark:prose-invert max-w-none">{state.result.recommendations}</div>
             </div>
           </CardContent>
         </Card>

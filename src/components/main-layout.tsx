@@ -40,6 +40,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const isSubPage = !["/", "/agriculture", "/livestock", "/aquaculture", "/forestry", "/credit-scoring"].includes(pathname);
   const isFeaturePage = ["/agriculture", "/livestock", "/aquaculture", "/forestry", "/credit-scoring"].includes(pathname);
 
+  const getParentHref = () => {
+    if (pathname.startsWith('/agriculture')) return '/agriculture';
+    if (pathname.startsWith('/forestry')) return '/forestry';
+    if (pathname.startsWith('/aquaculture')) return '/aquaculture';
+    if (pathname.startsWith('/livestock')) return '/livestock';
+    return '/';
+  }
 
   return (
     <SidebarProvider>
@@ -56,7 +63,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
              className="absolute left-4 top-3.5 hidden md:flex"
              asChild
            >
-             <Link href={isSubPage ? (pathname.startsWith('/agriculture') ? '/agriculture' : (pathname.startsWith('/forestry') ? '/forestry' : '/aquaculture')) : "/"}>
+             <Link href={isSubPage ? getParentHref() : "/"}>
                <ArrowLeft className="mr-2 h-4 w-4" />
                Back
              </Link>
