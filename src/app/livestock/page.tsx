@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -20,9 +21,10 @@ import {
 import { StatCard } from '@/components/stat-card';
 import { initialLivestockData } from '@/lib/data';
 import type { Livestock } from '@/lib/types';
-import { PlusCircle, Droplet, HeartPulse, Activity } from 'lucide-react';
+import { PlusCircle, Droplet, HeartPulse, Activity, Bot } from 'lucide-react';
 import { AddAnimalForm } from './add-animal-form';
 import { Button } from '@/components/ui/button';
+import { FeedPlanDialog } from './feed-plan-dialog';
 
 const getStatusVariant = (
   status: 'Healthy' | 'Sick' | 'Monitoring'
@@ -105,7 +107,7 @@ export default function LivestockPage() {
             Livestock Registry
           </CardTitle>
           <CardDescription>
-            Detailed records of all animals on the farm.
+            Detailed records of all animals on the farm. Click on an animal's row to see AI-powered actions.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -118,6 +120,7 @@ export default function LivestockPage() {
                 <TableHead>Birth Date</TableHead>
                 <TableHead>Last Checkup</TableHead>
                 <TableHead>Production</TableHead>
+                <TableHead className="text-right">AI Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -133,6 +136,14 @@ export default function LivestockPage() {
                   <TableCell>{animal.birthDate}</TableCell>
                   <TableCell>{animal.lastCheckup}</TableCell>
                   <TableCell>{animal.productionRate}</TableCell>
+                  <TableCell className="text-right">
+                    <FeedPlanDialog animal={animal}>
+                      <Button variant="outline" size="sm">
+                        <Bot className="mr-2 h-4 w-4" />
+                        Get Feed Plan
+                      </Button>
+                    </FeedPlanDialog>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
