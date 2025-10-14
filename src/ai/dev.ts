@@ -15,3 +15,4 @@ import '@/ai/ai-yield-prediction.ts';
 import '@/ai/ai-integrated-advisor.ts';
 import '@/ai/ai-market-analysis.ts';
 import '@/ai/ai-ab-testing.ts';
+import '@/ai/ai-forestry-satellite-analysis.ts';

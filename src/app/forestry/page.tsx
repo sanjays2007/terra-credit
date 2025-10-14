@@ -5,10 +5,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter
 } from "@/components/ui/card";
 import { StatCard } from "@/components/stat-card";
 import { forestryData } from "@/lib/data";
-import { TreePine, Leaf, Bot, CircleDollarSign } from "lucide-react";
+import { TreePine, Leaf, Bot, CircleDollarSign, Satellite } from "lucide-react";
 import Link from "next/link";
 
 export default function ForestryPage() {
@@ -47,25 +48,50 @@ export default function ForestryPage() {
         />
       </div>
 
-       <Card>
-        <CardHeader>
-          <CardTitle className="font-headline text-lg flex items-center gap-2">
-            <Bot className="text-primary" />
-            AI Forestry Analysis
-          </CardTitle>
-          <CardDescription>
-            Get AI-powered recommendations based on your tree inventory data.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="mb-4 text-sm text-muted-foreground">
-            Analyze your current inventory to receive suggestions for improving timber value, carbon sequestration, and overall forest health.
-          </p>
-          <Button asChild>
-            <Link href="/forestry/analysis">Analyze Inventory</Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-headline text-lg flex items-center gap-2">
+                <Bot className="text-primary" />
+                AI Forestry Analysis
+              </CardTitle>
+              <CardDescription>
+                Get AI-powered recommendations based on your tree inventory data.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Analyze your current inventory to receive suggestions for improving timber value, carbon sequestration, and overall forest health.
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Button asChild className="w-full">
+                <Link href="/forestry/analysis">Analyze Inventory</Link>
+              </Button>
+            </CardFooter>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-headline text-lg flex items-center gap-2">
+                <Satellite className="text-primary" />
+                AI Satellite Imagery Analysis
+              </CardTitle>
+              <CardDescription>
+                Interpret simulated satellite data to monitor forest health remotely.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Assess vegetation health (NDVI), detect stress, and identify potential issues like pests or water deficiency before they become critical.
+              </p>
+            </CardContent>
+             <CardFooter>
+                <Button asChild className="w-full">
+                  <Link href="/forestry/satellite-analysis">Analyze Satellite Data</Link>
+                </Button>
+            </CardFooter>
+          </Card>
+       </div>
 
       <Card>
         <CardHeader>
