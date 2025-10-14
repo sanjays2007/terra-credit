@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   Table,
   TableBody,
@@ -17,11 +18,12 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from '@/components/ui/card';
 import { StatCard } from '@/components/stat-card';
 import { initialLivestockData } from '@/lib/data';
 import type { Livestock } from '@/lib/types';
-import { PlusCircle, Droplet, HeartPulse, Activity, Bot } from 'lucide-react';
+import { PlusCircle, Droplet, HeartPulse, Activity, Bot, Camera } from 'lucide-react';
 import { AddAnimalForm } from './add-animal-form';
 import { Button } from '@/components/ui/button';
 import { FeedPlanDialog } from './feed-plan-dialog';
@@ -100,6 +102,28 @@ export default function LivestockPage() {
           iconClass="text-blue-500"
         />
       </div>
+
+      <Card>
+        <CardHeader>
+            <CardTitle className="font-headline text-lg flex items-center gap-2">
+            <Camera className="text-primary" />
+            AI-Powered Visual Health Check
+            </CardTitle>
+            <CardDescription>
+            Get a preliminary health assessment by uploading a photo of an animal.
+            </CardDescription>
+        </CardHeader>
+        <CardContent>
+            <p className="mb-4 text-sm text-muted-foreground">
+            The AI will analyze the image and your description to check for visual signs of distress or illness.
+            </p>
+        </CardContent>
+        <CardFooter>
+            <Button asChild>
+                <Link href="/livestock/health-check">Perform Health Check</Link>
+            </Button>
+        </CardFooter>
+      </Card>
 
       <Card>
         <CardHeader>

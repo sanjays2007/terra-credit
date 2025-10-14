@@ -33,6 +33,7 @@ const pageTitles: { [key: string]: string } = {
   "/agriculture/integrated-advisor": "Integrated Farm Advisor",
   "/agriculture/market-analysis": "AI Market Analysis",
   "/agriculture/ab-testing": "A/B Testing Assistant",
+  "/livestock/health-check": "AI Livestock Health Check",
 };
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
