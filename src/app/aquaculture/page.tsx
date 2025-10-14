@@ -35,6 +35,7 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  Legend,
 } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
