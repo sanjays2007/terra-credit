@@ -1,19 +1,33 @@
+/**
+ * @fileoverview Firestore Security Rules for the aquaculture pond management application.
+ *
+ * Core Philosophy:
+ * This ruleset provides public read access to pond data while restricting write access entirely,
+ * as anonymous authentication is used and no user-specific data or roles are defined.
+ *
+ * Data Structure:
+ * The application stores pond data in a flat `/ponds/{pondId}` collection.
+ *
+ * Key Security Decisions:
+ *  - Public Read Access: All ponds are readable by anyone.
+ *  - No Write Access: No user, even authenticated, can create, update, or delete ponds.
+ */
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper functions
-    function isUserAuthenticated() {
-      return request.auth != null;
-    }
-
-    // Ponds Collection
+    /**
+     * @description Grants public read access to pond data and denies all write access.
+     * @path /ponds/{pondId}
+     * @allow (get, list) Anyone can read pond data.
+     * @deny (create, update, delete) No one can create, update, or delete pond data.
+     * @principle Grants public read access and restricts all writes for prototyping.
+     */
     match /ponds/{pondId} {
-      // Anyone can read pond data
-      allow read: if true;
-      // Only authenticated users can create, update, or delete ponds
-      allow write: if isUserAuthenticated();
+      allow get, list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
   }
 }
