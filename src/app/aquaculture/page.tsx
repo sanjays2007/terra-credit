@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -36,10 +37,6 @@ import {
   Tooltip,
 } from 'recharts';
 import { Button } from '@/components/ui/button';
-import { useCollection } from '@/firebase/firestore/use-collection';
-import { useMemo } from 'react';
-import { useFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const chartConfig = {
@@ -55,11 +52,15 @@ const chartConfig = {
     label: 'pH',
     color: 'hsl(var(--chart-3))',
   },
-  turbidity: {
-    label: 'Turbidity (NTU)',
-    color: 'hsl(var(--chart-4))',
-  },
 };
+
+const pondData = [
+    { id: 'P001', name: 'Pond A', fishSpecies: 'Tilapia', status: 'Optimal', temperature: 28, oxygen: 6.5, ph: 7.2 },
+    { id: 'P002', name: 'Pond B', fishSpecies: 'Catla', status: 'Warning', temperature: 30, oxygen: 5.2, ph: 6.8 },
+    { id: 'P003', name: 'Pond C', fishSpecies: 'Rohu', status: 'Alert', temperature: 31, oxygen: 4.5, ph: 7.9 },
+    { id: 'P004', name: 'Pond D', fishSpecies: 'Tilapia', status: 'Optimal', temperature: 28.5, oxygen: 7.0, ph: 7.5 },
+];
+
 
 const getStatusVariant = (
   status: 'Optimal' | 'Warning' | 'Alert'
@@ -76,23 +77,11 @@ const getStatusVariant = (
 
 export default function AquaculturePage() {
   const latestData = waterQualityData[waterQualityData.length - 1];
-
-  const { firestore } = useFirebase();
-
-  const pondsQuery = useMemo(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'ponds'), orderBy('name'));
-  }, [firestore]);
-
-  const { data: ponds, loading } = useCollection(pondsQuery);
-
-  const stats = useMemo(() => {
-    if (!ponds) return { optimal: 0, total: 0 };
-    const optimalPonds = ponds.filter(
-      (p) => p.status === 'Optimal'
-    ).length;
-    return { optimal: optimalPonds, total: ponds.length };
-  }, [ponds]);
+  
+  const stats = {
+    optimal: pondData.filter(p => p.status === 'Optimal').length,
+    total: pondData.length,
+  };
 
 
   return (
@@ -127,27 +116,91 @@ export default function AquaculturePage() {
         />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-headline text-lg flex items-center gap-2">
-            <Bot className="text-primary" />
-            AI Water Quality Analysis
-          </CardTitle>
-          <CardDescription>
-            Get AI-powered recommendations based on your pond's water quality
-            parameters.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="mb-4 text-sm text-muted-foreground">
-            Enter your current water quality readings to receive an analysis and
-            suggestions for maintaining a healthy aquatic environment.
-          </p>
-          <Button asChild>
-            <Link href="/aquaculture/analysis">Perform Analysis</Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+            <CardHeader>
+                <CardTitle className="font-headline text-lg flex items-center gap-2">
+                <Bot className="text-primary" />
+                AI Water Quality Analysis
+                </CardTitle>
+                <CardDescription>
+                Get AI-powered recommendations based on your pond's water quality
+                parameters.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <p className="mb-4 text-sm text-muted-foreground">
+                Enter your current water quality readings to receive an analysis and
+                suggestions for maintaining a healthy aquatic environment.
+                </p>
+                <Button asChild>
+                <Link href="/aquaculture/analysis">Perform Analysis</Link>
+                </Button>
+            </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-headline text-lg">
+              Water Quality Trends (7-Day)
+            </CardTitle>
+            <CardDescription>
+              Monitoring key parameters for all ponds.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={chartConfig} className="h-48 w-full">
+              <AreaChart
+                data={waterQualityData}
+                margin={{ top: 5, right: 20, left: -10, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                />
+                <YAxis
+                  yAxisId="left"
+                  orientation="left"
+                  stroke="var(--color-temperature)"
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  stroke="var(--color-oxygen)"
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <Tooltip
+                  cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 2 }}
+                  content={<ChartTooltipContent indicator="dot" />}
+                />
+                <Legend content={<ChartLegendContent />} />
+                <Area
+                  dataKey="temperature"
+                  type="monotone"
+                  fill="var(--color-temperature)"
+                  fillOpacity={0.4}
+                  stroke="var(--color-temperature)"
+                  yAxisId="left"
+                />
+                <Area
+                  dataKey="oxygen"
+                  type="monotone"
+                  fill="var(--color-oxygen)"
+                  fillOpacity={0.4}
+                  stroke="var(--color-oxygen)"
+                  yAxisId="right"
+                />
+              </AreaChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+      </div>
 
       <Card>
         <CardHeader>
@@ -171,17 +224,7 @@ export default function AquaculturePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {loading && Array.from({ length: 3 }).map((_, i) => (
-                <TableRow key={i}>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-12" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-12" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-12" /></TableCell>
-                </TableRow>
-              ))}
-              {!loading && ponds?.map((pond) => (
+              {pondData.map((pond) => (
                 <TableRow key={pond.id}>
                   <TableCell className="font-medium">{pond.name}</TableCell>
                   <TableCell>{pond.fishSpecies}</TableCell>
@@ -195,13 +238,6 @@ export default function AquaculturePage() {
                   <TableCell>{pond.ph}</TableCell>
                 </TableRow>
               ))}
-               {!loading && ponds?.length === 0 && (
-                <TableRow>
-                    <TableCell colSpan={6} className="text-center h-24">
-                        No ponds found.
-                    </TableCell>
-                </TableRow>
-               )}
             </TableBody>
           </Table>
         </CardContent>
