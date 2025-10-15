@@ -7,13 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-} from '@/components/ui/chart';
 import { StatCard } from '@/components/stat-card';
 import {
   Table,
@@ -25,34 +18,11 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { getPonds, getWaterQualityHistory } from '@/lib/aquaculture-api';
-import type { Pond, WaterQuality } from '@/lib/types';
 import { Fish, Waves, Thermometer, Droplets, Bot } from 'lucide-react';
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-
-const chartConfig = {
-  temperature: {
-    label: 'Temp (°C)',
-    color: 'hsl(var(--chart-1))',
-  },
-  oxygen: {
-    label: 'Oxygen (mg/L)',
-    color: 'hsl(var(--chart-2))',
-  },
-  ph: {
-    label: 'pH',
-    color: 'hsl(var(--chart-3))',
-  },
-};
+import { WaterQualityChart } from './water-quality-chart';
 
 const getStatusVariant = (
   status: 'Optimal' | 'Warning' | 'Alert'
@@ -143,55 +113,7 @@ async function DashboardContent() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig} className="h-48 w-full">
-              <AreaChart
-                data={waterQualityData}
-                margin={{ top: 5, right: 20, left: -10, bottom: 0 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis
-                  dataKey="date"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                />
-                <YAxis
-                  yAxisId="left"
-                  orientation="left"
-                  stroke="var(--color-temperature)"
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  yAxisId="right"
-                  orientation="right"
-                  stroke="var(--color-oxygen)"
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <Tooltip
-                  cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 2 }}
-                  content={<ChartTooltipContent indicator="dot" />}
-                />
-                <ChartLegend content={<ChartLegendContent />} />
-                <Area
-                  dataKey="temperature"
-                  type="monotone"
-                  fill="var(--color-temperature)"
-                  fillOpacity={0.4}
-                  stroke="var(--color-temperature)"
-                  yAxisId="left"
-                />
-                <Area
-                  dataKey="oxygen"
-                  type="monotone"
-                  fill="var(--color-oxygen)"
-                  fillOpacity={0.4}
-                  stroke="var(--color-oxygen)"
-                  yAxisId="right"
-                />
-              </AreaChart>
-            </ChartContainer>
+            <WaterQualityChart data={waterQualityData} />
           </CardContent>
         </Card>
       </div>
