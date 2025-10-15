@@ -1,6 +1,4 @@
 
-'use client';
-
 import Link from 'next/link';
 import {
   Card,
@@ -26,7 +24,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { waterQualityData } from '@/lib/data';
+import { getPonds, getWaterQualityHistory } from '@/lib/aquaculture-api';
+import type { Pond, WaterQuality } from '@/lib/types';
 import { Fish, Waves, Thermometer, Droplets, Bot } from 'lucide-react';
 import {
   Area,
@@ -35,9 +34,9 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
 } from 'recharts';
 import { Button } from '@/components/ui/button';
+import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const chartConfig = {
@@ -55,14 +54,6 @@ const chartConfig = {
   },
 };
 
-const pondData = [
-    { id: 'P001', name: 'Pond A', fishSpecies: 'Tilapia', status: 'Optimal', temperature: 28, oxygen: 6.5, ph: 7.2 },
-    { id: 'P002', name: 'Pond B', fishSpecies: 'Catla', status: 'Warning', temperature: 30, oxygen: 5.2, ph: 6.8 },
-    { id: 'P003', name: 'Pond C', fishSpecies: 'Rohu', status: 'Alert', temperature: 31, oxygen: 4.5, ph: 7.9 },
-    { id: 'P004', name: 'Pond D', fishSpecies: 'Tilapia', status: 'Optimal', temperature: 28.5, oxygen: 7.0, ph: 7.5 },
-];
-
-
 const getStatusVariant = (
   status: 'Optimal' | 'Warning' | 'Alert'
 ): 'default' | 'destructive' | 'secondary' => {
@@ -76,7 +67,10 @@ const getStatusVariant = (
   }
 };
 
-export default function AquaculturePage() {
+async function DashboardContent() {
+  const pondData = await getPonds();
+  const waterQualityData = await getWaterQualityHistory();
+
   const latestData = waterQualityData[waterQualityData.length - 1];
   
   const stats = {
@@ -84,9 +78,8 @@ export default function AquaculturePage() {
     total: pondData.length,
   };
 
-
   return (
-    <div className="p-4 md:p-6 space-y-6">
+    <>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Pond Status"
@@ -180,7 +173,7 @@ export default function AquaculturePage() {
                   cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 2 }}
                   content={<ChartTooltipContent indicator="dot" />}
                 />
-                <Legend content={<ChartLegendContent />} />
+                <ChartLegend content={<ChartLegendContent />} />
                 <Area
                   dataKey="temperature"
                   type="monotone"
@@ -243,6 +236,47 @@ export default function AquaculturePage() {
           </Table>
         </CardContent>
       </Card>
-    </div>
+    </>
   );
+}
+
+function DashboardContentSkeleton() {
+    return (
+        <>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card><CardHeader className="pb-2"><Skeleton className="h-4 w-1/2" /></CardHeader><CardContent><Skeleton className="h-8 w-1/3 mb-1" /><Skeleton className="h-3 w-3/4" /></CardContent></Card>
+                <Card><CardHeader className="pb-2"><Skeleton className="h-4 w-1/2" /></CardHeader><CardContent><Skeleton className="h-8 w-1/3 mb-1" /><Skeleton className="h-3 w-3/4" /></CardContent></Card>
+                <Card><CardHeader className="pb-2"><Skeleton className="h-4 w-1/2" /></CardHeader><CardContent><Skeleton className="h-8 w-1/3 mb-1" /><Skeleton className="h-3 w-3/4" /></CardContent></Card>
+                <Card><CardHeader className="pb-2"><Skeleton className="h-4 w-1/2" /></CardHeader><CardContent><Skeleton className="h-8 w-1/3 mb-1" /><Skeleton className="h-3 w-3/4" /></CardContent></Card>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                    <CardHeader><CardTitle><Skeleton className="h-6 w-1/2" /></CardTitle><CardDescription><Skeleton className="h-4 w-3/4" /></CardDescription></CardHeader>
+                    <CardContent><Skeleton className="h-10 w-40" /></CardContent>
+                </Card>
+                <Card>
+                    <CardHeader><CardTitle><Skeleton className="h-6 w-1/2" /></CardTitle><CardDescription><Skeleton className="h-4 w-3/4" /></CardDescription></CardHeader>
+                    <CardContent><Skeleton className="h-48 w-full" /></CardContent>
+                </Card>
+            </div>
+            <Card>
+                <CardHeader><CardTitle><Skeleton className="h-6 w-1/3" /></CardTitle><CardDescription><Skeleton className="h-4 w-1/2" /></CardDescription></CardHeader>
+                <CardContent className="space-y-2">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                </CardContent>
+            </Card>
+        </>
+    )
+}
+
+export default function AquaculturePage() {
+    return (
+        <div className="p-4 md:p-6 space-y-6">
+            <Suspense fallback={<DashboardContentSkeleton />}>
+                <DashboardContent />
+            </Suspense>
+        </div>
+    )
 }

@@ -24,3 +24,13 @@ export type Livestock = {
     carbonSeq: number; // in kg CO2e
   };
   
+  export type Pond = {
+    id: string;
+    name: string;
+    fishSpecies: string;
+    status: 'Optimal' | 'Warning' | 'Alert';
+    temperature: number;
+    oxygen: number;
+    ph: number;
+  };
+  
