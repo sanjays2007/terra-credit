@@ -17,6 +17,7 @@ import {
   TreePine,
   Wind,
   Bot,
+  TrafficCone,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -77,6 +78,15 @@ const domainModules = [
     stats: "AI-Powered",
     color: "bg-indigo-100 dark:bg-indigo-900/50",
     textColor: "text-indigo-700 dark:text-indigo-300",
+  },
+  {
+    title: "Traffic Monitoring",
+    description: "Signal Analysis",
+    icon: TrafficCone,
+    href: "/traffic-monitoring",
+    stats: "AI Vision",
+    color: "bg-red-100 dark:bg-red-900/50",
+    textColor: "text-red-700 dark:text-red-300",
   },
 ];
 
@@ -169,7 +179,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Domain Modules */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {domainModules.map((mod) => (
                 <Card key={mod.title} className="flex flex-col">
                 <CardHeader className="flex-grow">
