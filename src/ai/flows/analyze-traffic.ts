@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview A flow to analyze traffic from camera feed and provide insights.
  *

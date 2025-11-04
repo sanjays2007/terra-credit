@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Camera,
   Car,
@@ -26,7 +26,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { getTrafficAnalysis } from "./actions"; // Uncomment to use AI flow
+// Future enhancement: import { getTrafficAnalysis } from "./actions"; for real AI flow integration
 
 interface TrafficData {
   people: number;
@@ -56,7 +56,6 @@ export default function TrafficMonitoringPage() {
   });
   const [violations, setViolations] = useState<ViolationData[]>([]);
   const [currentSignalTiming, setCurrentSignalTiming] = useState(60);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   // Simulate traffic analysis
   useEffect(() => {
@@ -93,21 +92,29 @@ export default function TrafficMonitoringPage() {
           time: new Date().toLocaleTimeString(),
           severity: Math.random() > 0.7 ? "high" : Math.random() > 0.4 ? "medium" : "low",
         };
-        setViolations((prev) => [newViolation, ...prev].slice(0, 10));
+        setViolations((prev) => {
+          const updated = [newViolation, ...prev].slice(0, 10);
+          // Update traffic data with new violation count
+          setTrafficData((prevData) => ({
+            ...prevData,
+            violations: updated.length,
+          }));
+          return updated;
+        });
       }
 
-      setTrafficData({
+      setTrafficData((prevData) => ({
+        ...prevData,
         people,
         twoWheelers,
         fourWheelers,
-        violations: violations.length,
         recommendedTiming,
         timestamp: new Date(),
-      });
+      }));
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [isAnalyzing, violations.length]);
+  }, [isAnalyzing]);
 
   const handleStartStop = () => {
     setIsAnalyzing(!isAnalyzing);
